@@ -11,19 +11,19 @@ jobs:
       contents: write  # Allow pushing to gh-pages
       
     steps:
-      - name: Checkout repository with submodules
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: true  # ดึง submodules ด้วย (VersionControl1)
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # ใช้ Node.js เวอร์ชัน 18 หรือสูงกว่า
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: VersionControl1/package-lock.json
 
       - name: Install dependencies (VersionControl1)
         working-directory: VersionControl1
-        run: npm install
+        run: npm ci
 
       - name: Build Quasar SPA (VersionControl1)
         working-directory: VersionControl1
@@ -32,5 +32,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.NEW_TOKEN }}  # ใช้โทเคนในตัวของ GitHub Actions
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: VersionControl1/dist/spa
